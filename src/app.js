@@ -17,7 +17,7 @@ const PORT = 3017;
 app.use(logMiddleware); // 최상단위치
 app.use(express.json());
 app.use(cookieParser());
-app.use('/api', [likesRouter, UsersRouter, PostsRouter, CommentsRouter]);
+app.use("/", [likesRouter, UsersRouter, PostsRouter, CommentsRouter]);
 app.use(ErrorHandlingMiddleware); // 전역미들웨어중 에러핸들링미들웨어는 **최하단** 에 위치해야함 
 
 app.listen(PORT, () => {
