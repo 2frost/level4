@@ -4,10 +4,7 @@ import express from 'express';
 import cookieParser from 'cookie-parser';
 import logMiddleware from './middlewares/log.middleware.js';
 import ErrorHandlingMiddleware from './middlewares/error-handling.middleware.js';
-import likesRouter from './routes/likes.router.js';
-import UsersRouter from './routes/users.router.js';
-import PostsRouter from './routes/posts.router.js';
-import CommentsRouter from './routes/comments.router.js';
+import router from "./routes/index.js";
 import dotenv from 'dotenv'
 
 dotenv.config();
@@ -17,7 +14,7 @@ const PORT = 3017;
 app.use(logMiddleware); // 최상단위치
 app.use(express.json());
 app.use(cookieParser());
-app.use("/", [likesRouter, UsersRouter, PostsRouter, CommentsRouter]);
+app.use("/api", router);
 app.use(ErrorHandlingMiddleware); // 전역미들웨어중 에러핸들링미들웨어는 **최하단** 에 위치해야함 
 
 app.listen(PORT, () => {
