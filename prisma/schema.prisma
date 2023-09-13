@@ -1,0 +1,74 @@
+//* schema likes 추가 '0912 lv4
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+// npx prisma migrate dev --name init "마이그레이션, 깃헙의 버전관리처럼 버전을 관리할 수 있는 것"
+// npx prisma migrate dev  " 생성한 이후에 바뀐 내용을 저장하고 싶을 때"
+// npx prisma migrate resolve --applied "프로덕션에 적용한 마이그레이션 이름" < 마이그레이션 완료 명령어
+
+model Users {
+  userId    Int      @id @default(autoincrement()) @map("id")
+  nickname  String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  Posts Posts[]
+  Comments Comments[]
+  Likes    Likes[] // 라이크기능 추가 
+
+  @@map("Users")
+}
+
+model Posts {
+  postId    Int      @id @default(autoincrement()) @map("id")
+  UserId    Int
+  title     String
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User Users @relation(fields: [UserId], references: [userId], onDelete: Cascade)
+  Comments Comments[]
+  Likes    Likes[] // 라이크기능추가
+
+  @@map("Posts")
+}
+
+model Comments {
+  commentId Int    @id @default(autoincrement()) @map("id")
+  PostId    Int    
+  UserId    Int
+  comment   String @db.Text
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // user는 js이름 
+// Users는 prisma이름 
+  User Users @relation(fields: [UserId], references: [userId], onDelete: Cascade)
+  Post Posts @relation(fields: [PostId], references: [postId], onDelete: Cascade)
+
+
+@@map("Comments")
+}
+// likes 추가
+model Likes {
+  likeId    Int      @id @default(autoincrement()) @map("id")
+  PostId    Int
+  UserId    Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  User Users @relation(fields: [UserId], references: [userId], onDelete: Cascade)
+  Post Posts @relation(fields: [PostId], references: [postId], onDelete: Cascade)
+
+
+   @@map("Likes")
+}
